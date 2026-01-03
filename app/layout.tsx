@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name | Computer Science Student",
+  title: "Anshu | Computer Science Student",
   description: "Portfolio of a passionate Computer Science student specializing in web development and software engineering.",
   keywords: ["portfolio", "developer", "computer science", "web development"],
 };
