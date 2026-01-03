@@ -53,7 +53,7 @@ export function HeroSection() {
               View My Work
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <a href="/resume/Anshu_BSc_CS_2023-26.pdf" download>
+            <a href="/Resume/Anshu_BSc_CS_2023-26.pdf" download>
               <Button
                 size="lg"
                 variant="outline"
