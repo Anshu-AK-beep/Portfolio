@@ -32,7 +32,7 @@ const projects = [
     tags: ["Python", "Streamlit", "Graph Algorithms", "Dijkstra’s Algorithm", "AI Priority Scoring", "Data Visualization"],
     github: "https://github.com/Anshu-AK-beep/disaster-relief-system",
     live: "https://disaster-relief-system-007.streamlit.app/",
-    featured: true
+    featured: false
   },
   {
   title: "ThinkMate — AI Socratic Mentor",
