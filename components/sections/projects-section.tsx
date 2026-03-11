@@ -32,8 +32,17 @@ const projects = [
     tags: ["Python", "Streamlit", "Graph Algorithms", "Dijkstra’s Algorithm", "AI Priority Scoring", "Data Visualization"],
     github: "https://github.com/Anshu-AK-beep/disaster-relief-system",
     live: "https://disaster-relief-system-007.streamlit.app/",
-    featured: false
-  }
+    featured: true
+  },
+  {
+  title: "ThinkMate — AI Socratic Mentor",
+  description: "A full-stack AI-powered learning platform that uses the Socratic method to build genuine critical thinking in students. Instead of giving direct answers, ThinkMate guides learners through adaptive questioning, detects misconceptions in real-time, and tracks reasoning improvement using spaced repetition based on the Ebbinghaus forgetting curve.",
+  image: "/projects/thinkmate_1.png",
+  tags: ["React", "TypeScript", "Node.js", "Express", "Groq AI", "Supabase", "AWS App Runner", "Tailwind CSS", "Vite"],
+  github: "https://github.com/Anshu-AK-beep/thinkmate",
+  live: "https://thinkmate-self.vercel.app",
+  featured: true
+}
 ]
 
 export function ProjectsSection() {
