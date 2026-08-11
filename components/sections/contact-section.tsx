@@ -29,7 +29,7 @@ export function ContactSection() {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
-          to_email: 'a69448190@gmail.com'
+          to_email: 'ansh448555@gmail.com'
         },
         'Z6xeaakeCljBRIq_T'           // Replace with your EmailJS Public Key
       )
@@ -51,7 +51,7 @@ export function ContactSection() {
       setFormData({ name: "", email: "", message: "" })
     } catch (error) {
       console.error('Failed to send email:', error)
-      alert("Failed to send message. Please try again or email me directly at a69448190@gmail.com")
+      alert("Failed to send message. Please try again or email me directly at ansh448555@gmail.com")
     } finally {
       setIsSubmitting(false)
     }
@@ -61,8 +61,8 @@ export function ContactSection() {
     {
       icon: Mail,
       label: "Email",
-      value: "a69448190@gmail.com",
-      href: "mailto:a69448190@gmail.com"
+      value: "ansh448555@gmail.com",
+      href: "mailto:ansh448555@gmail.com"
     },
     {
       icon: Phone,
@@ -92,7 +92,7 @@ export function ContactSection() {
     {
       icon: Mail,
       label: "Email",
-      href: "mailto:a69448190@gmail.com"
+      href: "mailto:ansh448555@gmail.com"
     }
   ]
 

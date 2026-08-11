@@ -5,44 +5,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const skillCategories = [
   {
-    category: "Frontend Development",
+    category: "Backend & Infrastructure",
+    skills: [
+      "Python",
+      "FastAPI",
+      "Node.js",
+      "Celery",
+      "Redis",
+      "Docker",
+      "GitHub Actions (CI/CD)"
+    ]
+  },
+  {
+    category: "Data & Retrieval",
+    skills: [
+      "PostgreSQL",
+      "pgvector",
+      "pg_cron & Partitioning",
+      "BRIN Indexing",
+      "FAISS",
+      "BM25",
+      "Reciprocal Rank Fusion"
+    ]
+  },
+  {
+    category: "AI / ML Engineering",
+    skills: [
+      "LLM-as-Judge Evaluation",
+      "RAG",
+      "Prompt Engineering",
+      "Statistical Drift Detection",
+      "Multi-Agent Systems"
+    ]
+  },
+  {
+    category: "Frontend & Core",
     skills: [
       "React.js",
       "Next.js",
-      "JavaScript",
+      "TypeScript",
       "Tailwind CSS",
-      "HTML5",
-      "CSS3"
-    ]
-  },
-  {
-    category: "Backend Development",
-    skills: [
-      "Node.js",
-      "Python",
-      "System Logic",
-      "MySQL"
-    ]
-  },
-  {
-    category: "Tools & Technologies",
-    skills: [
-      "Git",
-      "GitHub",
-      "Docker",
-      "VS Code",
-      "Vercel"
-    ]
-  },
-  {
-    category: "Core Concepts",
-    skills: [
-      "Data Structures",
-      "Algorithms",
-      "OOP",
-      "System Design",
-      "Database Design",
-      "Problem Solving"
+      "Data Structures & Algorithms",
+      "System Design"
     ]
   }
 ]
@@ -91,7 +95,7 @@ export function SkillsSection() {
         {/* Additional Info */}
         <div className="mt-12 text-center">
           <p className="text-muted-foreground">
-            Always learning and exploring new technologies to stay current in the ever-evolving tech landscape
+            Picked up mostly by building things that needed to actually work in production, not just in a notebook
           </p>
         </div>
       </div>

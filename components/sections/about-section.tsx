@@ -9,13 +9,13 @@ const highlights = [
     icon: GraduationCap,
     title: "Education",
     description: "B.Sc. (H) Computer Science",
-    detail: "Expected Graduation: 2026 • CGPA: 7.23/10"
+    detail: " Graduation: 2026 • CGPA: 8.015/10"
   },
   {
     icon: Code2,
-    title: "System & Data-Driven Projects",
-    description: "Agentic Trading System",
-    detail: "Disaster Relief Resource Allocation System"
+    title: "Recent Builds",
+    description: "EvalOps · Candidate Discovery",
+    detail: "LLM evaluation infra & retrieval pipelines"
   },
   {
     icon: Briefcase,
@@ -67,13 +67,12 @@ export function AboutSection() {
           {/* Text Content */}
           <div className="space-y-4 text-center lg:text-left">
             <h3 className="text-2xl font-semibold">
-              Turning Ideas into Digital Reality
+              I build systems, then try to break them
             </h3>
             <p className="text-muted-foreground leading-relaxed">
-              I design and build well-structured software systems that solve complex, real-world problems.
-              My interest in technology began with understanding how applications work behind the scenes
-              and gradually evolved into a focus on building reliable, impactful software through
-              thoughtful engineering.
+              I design and build software systems end-to-end — retrieval pipelines, evaluation
+              infrastructure, full-stack apps — and I don&apos;t consider something done until I&apos;ve
+              tested it with real statistics or adversarial cases, not just a demo that worked once.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               I have a strong foundation in data structures, algorithms, and software engineering principles,

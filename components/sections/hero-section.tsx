@@ -2,7 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Github, Linkedin, Mail, Download } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ArrowRight, Github, Linkedin, Mail, Download, ChevronDown } from "lucide-react"
 
 export function HeroSection() {
   const scrollToSection = (href: string) => {
@@ -39,8 +45,8 @@ export function HeroSection() {
 
           {/* Description */}
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Passionate about building scalable software systems and solving complex, real-world problems. 
-            Focused on engineering reliable, end-to-end solutions using modern technologies.
+            B.Sc.(H) Computer Science graduate who builds full pipelines — retrieval, evaluation, infrastructure —
+            and validates them with real statistics and adversarial tests before calling them done.
           </p>
 
           {/* CTA Buttons */}
@@ -53,16 +59,31 @@ export function HeroSection() {
               View My Work
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <a href="/Resume/Anshu_BSc_CS_2023-26.pdf" download>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto"
-              >
-              <Download className="mr-2 h-4 w-4" />
-                Download Resume
-              </Button>
-            </a>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Resume
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                <DropdownMenuItem asChild>
+                  <a href="/Resume/Anshu_SD.pdf" download className="cursor-pointer">
+                    SDE / Software Engineer
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/Resume/Anshu_AI.pdf" download className="cursor-pointer">
+                    AI/ML Engineer
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
           </div>
 
@@ -105,7 +126,7 @@ export function HeroSection() {
               asChild
             >
               <a
-                href="mailto:a69448190@gmail.com.com"
+                href="mailto:ansh448555@gmail.com"
                 aria-label="Email"
               >
                 <Mail className="h-5 w-5" />

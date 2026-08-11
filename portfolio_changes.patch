@@ -1,0 +1,835 @@
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 7888b06..6e169ad 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -9,8 +9,8 @@ const inter = Inter({
+ });
+ 
+ export const metadata: Metadata = {
+-  title: "Anshu | Computer Science Student",
+-  description: "Portfolio of a passionate Computer Science student specializing in web development and software engineering.",
++  title: "Anshu | AI/ML & Backend Engineer",
++  description: "Portfolio of Anshu, a final-year Computer Science student building and rigorously testing LLM evaluation infrastructure, retrieval pipelines, and full-stack systems.",
+   keywords: ["portfolio", "developer", "computer science", "web development"],
+ };
+ 
+diff --git a/components/sections/about-section.tsx b/components/sections/about-section.tsx
+index f5e95fd..d42fd7a 100644
+--- a/components/sections/about-section.tsx
++++ b/components/sections/about-section.tsx
+@@ -9,13 +9,13 @@ const highlights = [
+     icon: GraduationCap,
+     title: "Education",
+     description: "B.Sc. (H) Computer Science",
+-    detail: "Expected Graduation: 2026 • CGPA: 7.23/10"
++    detail: "Expected Graduation: 2026 • CGPA: 8.03/10"
+   },
+   {
+     icon: Code2,
+-    title: "System & Data-Driven Projects",
+-    description: "Agentic Trading System",
+-    detail: "Disaster Relief Resource Allocation System"
++    title: "Recent Builds",
++    description: "EvalOps · Candidate Discovery",
++    detail: "LLM evaluation infra & retrieval pipelines"
+   },
+   {
+     icon: Briefcase,
+@@ -67,13 +67,12 @@ export function AboutSection() {
+           {/* Text Content */}
+           <div className="space-y-4 text-center lg:text-left">
+             <h3 className="text-2xl font-semibold">
+-              Turning Ideas into Digital Reality
++              I build systems, then try to break them
+             </h3>
+             <p className="text-muted-foreground leading-relaxed">
+-              I design and build well-structured software systems that solve complex, real-world problems.
+-              My interest in technology began with understanding how applications work behind the scenes
+-              and gradually evolved into a focus on building reliable, impactful software through
+-              thoughtful engineering.
++              I design and build software systems end-to-end — retrieval pipelines, evaluation
++              infrastructure, full-stack apps — and I don&apos;t consider something done until I&apos;ve
++              tested it with real statistics or adversarial cases, not just a demo that worked once.
+             </p>
+             <p className="text-muted-foreground leading-relaxed">
+               I have a strong foundation in data structures, algorithms, and software engineering principles,
+diff --git a/components/sections/architecture-diagrams.tsx b/components/sections/architecture-diagrams.tsx
+new file mode 100644
+index 0000000..d5819bd
+--- /dev/null
++++ b/components/sections/architecture-diagrams.tsx
+@@ -0,0 +1,175 @@
++"use client"
++
++// Architecture diagrams for the flagship projects, adapted from the
++// Mermaid diagram in the EvalOps README and the pipeline diagram in the
++// Intelligent Candidate Discovery README. Built as inline SVG (not images)
++// so they stay crisp and pick up the site's theme colors automatically.
++
++const box = {
++  fill: "var(--card)",
++  stroke: "var(--border)",
++}
++
++const accentBox = {
++  fill: "var(--primary)",
++  fillOpacity: 0.08,
++  stroke: "var(--primary)",
++}
++
++const dangerBox = {
++  fill: "var(--destructive)",
++  fillOpacity: 0.08,
++  stroke: "var(--destructive)",
++}
++
++const label = {
++  fill: "var(--foreground)",
++  fontFamily: "var(--font-mono)",
++}
++
++const sublabel = {
++  fill: "var(--muted-foreground)",
++  fontFamily: "var(--font-mono)",
++}
++
++const arrow = {
++  stroke: "var(--muted-foreground)",
++  strokeWidth: 1.5,
++  fill: "none",
++}
++
++export function EvalOpsDiagram() {
++  return (
++    <svg
++      viewBox="0 0 760 460"
++      className="w-full h-auto"
++      role="img"
++      aria-label="EvalOps architecture: SDK traces flow through FastAPI into two Celery queues, one for standard scoring and a dedicated priority queue for safety violations, both scored by an LLM judge, written to partitioned Postgres, and surfaced via a dashboard and a CI/CD quality gate."
++    >
++      <defs>
++        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
++          <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted-foreground)" />
++        </marker>
++      </defs>
++
++      {/* SDK */}
++      <rect x="290" y="10" width="180" height="42" rx="6" style={box} />
++      <text x="380" y="30" textAnchor="middle" fontSize="12" style={label}>Python / Node SDK</text>
++      <text x="380" y="44" textAnchor="middle" fontSize="10" style={sublabel}>@trace decorator</text>
++      <path d="M380,52 L380,78" style={arrow} markerEnd="url(#arrowhead)" />
++
++      {/* FastAPI */}
++      <rect x="270" y="80" width="220" height="42" rx="6" style={accentBox} />
++      <text x="380" y="100" textAnchor="middle" fontSize="12" style={label}>FastAPI · POST /trace</text>
++      <text x="380" y="114" textAnchor="middle" fontSize="10" style={sublabel}>instant, non-blocking</text>
++
++      {/* split to two queues */}
++      <path d="M340,122 L200,160" style={arrow} markerEnd="url(#arrowhead)" />
++      <path d="M420,122 L560,160" style={arrow} markerEnd="url(#arrowhead)" />
++
++      {/* Main queue */}
++      <rect x="100" y="162" width="200" height="46" rx="6" style={box} />
++      <text x="200" y="182" textAnchor="middle" fontSize="12" style={label}>Celery queue</text>
++      <text x="200" y="196" textAnchor="middle" fontSize="10" style={sublabel}>4 averaged dimensions</text>
++
++      {/* Safety queue */}
++      <rect x="460" y="162" width="200" height="46" rx="6" style={dangerBox} />
++      <text x="560" y="182" textAnchor="middle" fontSize="12" style={label}>Safety queue</text>
++      <text x="560" y="196" textAnchor="middle" fontSize="10" style={sublabel}>hard gate · real-time alert</text>
++
++      {/* both to judge */}
++      <path d="M220,208 L340,248" style={arrow} markerEnd="url(#arrowhead)" />
++      <path d="M540,208 L420,248" style={arrow} markerEnd="url(#arrowhead)" />
++
++      {/* Judge */}
++      <rect x="270" y="250" width="220" height="46" rx="6" style={accentBox} />
++      <text x="380" y="270" textAnchor="middle" fontSize="12" style={label}>LLM-as-Judge</text>
++      <text x="380" y="284" textAnchor="middle" fontSize="10" style={sublabel}>forced tool-calling · CoT before score</text>
++
++      {/* judge to postgres */}
++      <path d="M380,296 L380,322" style={arrow} markerEnd="url(#arrowhead)" />
++
++      {/* Postgres */}
++      <rect x="230" y="324" width="300" height="46" rx="6" style={box} />
++      <text x="380" y="344" textAnchor="middle" fontSize="12" style={label}>PostgreSQL — traces / scores</text>
++      <text x="380" y="358" textAnchor="middle" fontSize="10" style={sublabel}>partitioned · BRIN-indexed · pgvector · pg_cron</text>
++
++      {/* safety violation side branch */}
++      <path d="M560,208 L560,324" style={arrow} strokeDasharray="4 3" markerEnd="url(#arrowhead)" />
++      <text x="572" y="270" fontSize="9" style={sublabel}>violation →</text>
++      <text x="572" y="282" fontSize="9" style={sublabel}>alert + auto-promote</text>
++      <text x="572" y="294" fontSize="9" style={sublabel}>to regression suite</text>
++
++      {/* postgres to dashboard + CI */}
++      <path d="M310,370 L200,402" style={arrow} markerEnd="url(#arrowhead)" />
++      <path d="M450,370 L560,402" style={arrow} markerEnd="url(#arrowhead)" />
++
++      <rect x="100" y="404" width="200" height="46" rx="6" style={box} />
++      <text x="200" y="424" textAnchor="middle" fontSize="12" style={label}>React Dashboard</text>
++      <text x="200" y="438" textAnchor="middle" fontSize="10" style={sublabel}>trend · radar · flagged traces</text>
++
++      <rect x="460" y="404" width="200" height="46" rx="6" style={box} />
++      <text x="560" y="424" textAnchor="middle" fontSize="12" style={label}>CI/CD Quality Gate</text>
++      <text x="560" y="438" textAnchor="middle" fontSize="10" style={sublabel}>vs. frozen golden baseline</text>
++    </svg>
++  )
++}
++
++export function ICDDiagram() {
++  return (
++    <svg
++      viewBox="0 0 760 420"
++      className="w-full h-auto"
++      role="img"
++      aria-label="Intelligent Candidate Discovery pipeline: a job description is decomposed by an LLM, matched against 100,000 candidates via parallel semantic and lexical retrieval, fused with Reciprocal Rank Fusion, scored by a 5-dimension rule scorer, and re-ranked by an LLM before producing a ranked shortlist."
++    >
++      <defs>
++        <marker id="arrowhead2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
++          <path d="M0,0 L6,3 L0,6 Z" fill="var(--muted-foreground)" />
++        </marker>
++      </defs>
++
++      {/* JD input */}
++      <rect x="290" y="10" width="180" height="42" rx="6" style={box} />
++      <text x="380" y="30" textAnchor="middle" fontSize="12" style={label}>Job Description</text>
++      <text x="380" y="44" textAnchor="middle" fontSize="10" style={sublabel}>.docx</text>
++      <path d="M380,52 L380,78" style={arrow} markerEnd="url(#arrowhead2)" />
++
++      {/* JD decomposition */}
++      <rect x="240" y="80" width="280" height="42" rx="6" style={accentBox} />
++      <text x="380" y="100" textAnchor="middle" fontSize="12" style={label}>LLM Call 1 — JD Decomposition</text>
++      <text x="380" y="114" textAnchor="middle" fontSize="10" style={sublabel}>hard skills · deal-breakers · culture signals</text>
++
++      <path d="M330,122 L180,160" style={arrow} markerEnd="url(#arrowhead2)" />
++      <path d="M430,122 L580,160" style={arrow} markerEnd="url(#arrowhead2)" />
++
++      {/* semantic path */}
++      <rect x="80" y="162" width="200" height="46" rx="6" style={box} />
++      <text x="180" y="182" textAnchor="middle" fontSize="12" style={label}>TF-IDF + SVD → FAISS</text>
++      <text x="180" y="196" textAnchor="middle" fontSize="10" style={sublabel}>semantic ANN · top-300</text>
++
++      {/* lexical path */}
++      <rect x="480" y="162" width="200" height="46" rx="6" style={box} />
++      <text x="580" y="182" textAnchor="middle" fontSize="12" style={label}>BM25 (107-term)</text>
++      <text x="580" y="196" textAnchor="middle" fontSize="10" style={sublabel}>lexical retrieval · top-300</text>
++
++      <path d="M200,208 L340,246" style={arrow} markerEnd="url(#arrowhead2)" />
++      <path d="M560,208 L420,246" style={arrow} markerEnd="url(#arrowhead2)" />
++
++      {/* RRF fusion */}
++      <rect x="270" y="248" width="220" height="42" rx="6" style={box} />
++      <text x="380" y="268" textAnchor="middle" fontSize="12" style={label}>Reciprocal Rank Fusion</text>
++      <text x="380" y="282" textAnchor="middle" fontSize="10" style={sublabel}>k=60 · top-300 merged</text>
++      <path d="M380,290 L380,314" style={arrow} markerEnd="url(#arrowhead2)" />
++
++      {/* rule scorer */}
++      <rect x="220" y="316" width="320" height="46" rx="6" style={accentBox} />
++      <text x="380" y="336" textAnchor="middle" fontSize="12" style={label}>D1–D5 Rule Scorer</text>
++      <text x="380" y="350" textAnchor="middle" fontSize="10" style={sublabel}>skills · experience · descriptions · education · behavioral</text>
++      <path d="M380,362 L380,386" style={arrow} markerEnd="url(#arrowhead2)" />
++
++      {/* LLM re-rank */}
++      <text x="380" y="404" textAnchor="middle" fontSize="11" style={sublabel}>↓ LLM Call 2 — CoT re-rank (40% LLM · 35% rule · 25% semantic)</text>
++    </svg>
++  )
++}
+diff --git a/components/sections/contact-section.tsx b/components/sections/contact-section.tsx
+index 375875b..94e653c 100644
+--- a/components/sections/contact-section.tsx
++++ b/components/sections/contact-section.tsx
+@@ -29,7 +29,7 @@ export function ContactSection() {
+           from_name: formData.name,
+           from_email: formData.email,
+           message: formData.message,
+-          to_email: 'a69448190@gmail.com'
++          to_email: 'ansh448555@gmail.com'
+         },
+         'Z6xeaakeCljBRIq_T'           // Replace with your EmailJS Public Key
+       )
+@@ -51,7 +51,7 @@ export function ContactSection() {
+       setFormData({ name: "", email: "", message: "" })
+     } catch (error) {
+       console.error('Failed to send email:', error)
+-      alert("Failed to send message. Please try again or email me directly at a69448190@gmail.com")
++      alert("Failed to send message. Please try again or email me directly at ansh448555@gmail.com")
+     } finally {
+       setIsSubmitting(false)
+     }
+@@ -61,8 +61,8 @@ export function ContactSection() {
+     {
+       icon: Mail,
+       label: "Email",
+-      value: "a69448190@gmail.com",
+-      href: "mailto:a69448190@gmail.com"
++      value: "ansh448555@gmail.com",
++      href: "mailto:ansh448555@gmail.com"
+     },
+     {
+       icon: Phone,
+@@ -92,7 +92,7 @@ export function ContactSection() {
+     {
+       icon: Mail,
+       label: "Email",
+-      href: "mailto:a69448190@gmail.com"
++      href: "mailto:ansh448555@gmail.com"
+     }
+   ]
+ 
+diff --git a/components/sections/flagship-project-card.tsx b/components/sections/flagship-project-card.tsx
+new file mode 100644
+index 0000000..06dacf1
+--- /dev/null
++++ b/components/sections/flagship-project-card.tsx
+@@ -0,0 +1,105 @@
++"use client"
++
++import { Card, CardContent } from "@/components/ui/card"
++import { Badge } from "@/components/ui/badge"
++import { Button } from "@/components/ui/button"
++import { Github, FileText, Lightbulb } from "lucide-react"
++import type { ReactNode } from "react"
++
++interface Metric {
++  value: string
++  label: string
++}
++
++interface FlagshipProjectCardProps {
++  eyebrow: string
++  title: string
++  pitch: string
++  metrics: Metric[]
++  diagram: ReactNode
++  tags: string[]
++  github: string
++  readmeNote?: string
++  engineeringNoteHeading: string
++  engineeringNoteBody: string
++}
++
++export function FlagshipProjectCard({
++  eyebrow,
++  title,
++  pitch,
++  metrics,
++  diagram,
++  tags,
++  github,
++  readmeNote,
++  engineeringNoteHeading,
++  engineeringNoteBody,
++}: FlagshipProjectCardProps) {
++  return (
++    <Card className="overflow-hidden border-primary/20">
++      <CardContent className="p-6 sm:p-8 space-y-6">
++        {/* Header */}
++        <div className="space-y-2">
++          <Badge variant="secondary" className="text-xs tracking-wide uppercase">
++            {eyebrow}
++          </Badge>
++          <h3 className="text-2xl sm:text-3xl font-bold">{title}</h3>
++          <p className="text-muted-foreground leading-relaxed max-w-3xl">{pitch}</p>
++        </div>
++
++        {/* Metrics row */}
++        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
++          {metrics.map((m, i) => (
++            <div key={i} className="rounded-lg border border-border bg-muted/40 px-3 py-3 text-center">
++              <div className="text-lg sm:text-xl font-bold text-primary leading-tight">{m.value}</div>
++              <div className="text-xs text-muted-foreground mt-1 leading-snug">{m.label}</div>
++            </div>
++          ))}
++        </div>
++
++        {/* Diagram */}
++        <div className="rounded-lg border border-border bg-muted/20 p-4">
++          {diagram}
++        </div>
++
++        {/* Tags */}
++        <div className="flex flex-wrap gap-2">
++          {tags.map((tag, i) => (
++            <Badge key={i} variant="outline" className="text-xs">
++              {tag}
++            </Badge>
++          ))}
++        </div>
++
++        {/* Engineering note */}
++        <div className="rounded-lg bg-primary/5 border border-primary/15 p-4 flex gap-3">
++          <Lightbulb className="h-5 w-5 text-primary shrink-0 mt-0.5" />
++          <div className="space-y-1">
++            <p className="text-sm font-semibold">{engineeringNoteHeading}</p>
++            <p className="text-sm text-muted-foreground leading-relaxed">{engineeringNoteBody}</p>
++          </div>
++        </div>
++
++        {/* CTAs */}
++        <div className="flex flex-wrap gap-3 pt-2">
++          <Button asChild>
++            <a href={github} target="_blank" rel="noopener noreferrer">
++              <Github className="mr-2 h-4 w-4" />
++              View Code
++            </a>
++          </Button>
++          <Button variant="outline" asChild>
++            <a href={`${github}#readme`} target="_blank" rel="noopener noreferrer">
++              <FileText className="mr-2 h-4 w-4" />
++              Read the README
++            </a>
++          </Button>
++        </div>
++        {readmeNote && (
++          <p className="text-xs text-muted-foreground pt-1">{readmeNote}</p>
++        )}
++      </CardContent>
++    </Card>
++  )
++}
+diff --git a/components/sections/footer.tsx b/components/sections/footer.tsx
+index 5b79fde..e001729 100644
+--- a/components/sections/footer.tsx
++++ b/components/sections/footer.tsx
+@@ -31,7 +31,7 @@ export function Footer() {
+               <Linkedin className="h-5 w-5" />
+             </a>
+             <a
+-              href="mailto:a69448190@gmail.com"
++              href="mailto:ansh448555@gmail.com"
+               className="text-muted-foreground hover:text-primary transition-colors"
+               aria-label="Email"
+             >
+diff --git a/components/sections/hero-section.tsx b/components/sections/hero-section.tsx
+index a167bea..4237090 100644
+--- a/components/sections/hero-section.tsx
++++ b/components/sections/hero-section.tsx
+@@ -2,7 +2,13 @@
+ 
+ import { Button } from "@/components/ui/button"
+ import { Badge } from "@/components/ui/badge"
+-import { ArrowRight, Github, Linkedin, Mail, Download } from "lucide-react"
++import {
++  DropdownMenu,
++  DropdownMenuContent,
++  DropdownMenuItem,
++  DropdownMenuTrigger,
++} from "@/components/ui/dropdown-menu"
++import { ArrowRight, Github, Linkedin, Mail, Download, ChevronDown } from "lucide-react"
+ 
+ export function HeroSection() {
+   const scrollToSection = (href: string) => {
+@@ -39,8 +45,8 @@ export function HeroSection() {
+ 
+           {/* Description */}
+           <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
+-            Passionate about building scalable software systems and solving complex, real-world problems. 
+-            Focused on engineering reliable, end-to-end solutions using modern technologies.
++            Final-year CS student who builds full pipelines — retrieval, evaluation, infrastructure —
++            and validates them with real statistics and adversarial tests before calling them done.
+           </p>
+ 
+           {/* CTA Buttons */}
+@@ -53,16 +59,31 @@ export function HeroSection() {
+               View My Work
+               <ArrowRight className="ml-2 h-4 w-4" />
+             </Button>
+-            <a href="/Resume/Anshu_BSc_CS_2023-26.pdf" download>
+-              <Button
+-                size="lg"
+-                variant="outline"
+-                className="w-full sm:w-auto"
+-              >
+-              <Download className="mr-2 h-4 w-4" />
+-                Download Resume
+-              </Button>
+-            </a>
++            <DropdownMenu>
++              <DropdownMenuTrigger asChild>
++                <Button
++                  size="lg"
++                  variant="outline"
++                  className="w-full sm:w-auto"
++                >
++                  <Download className="mr-2 h-4 w-4" />
++                  Download Resume
++                  <ChevronDown className="ml-2 h-4 w-4" />
++                </Button>
++              </DropdownMenuTrigger>
++              <DropdownMenuContent align="center">
++                <DropdownMenuItem asChild>
++                  <a href="/Resume/Anshu_SDE_Resume.pdf" download className="cursor-pointer">
++                    SDE / Software Engineer
++                  </a>
++                </DropdownMenuItem>
++                <DropdownMenuItem asChild>
++                  <a href="/Resume/Anshu_AIML_Resume.pdf" download className="cursor-pointer">
++                    AI/ML Engineer
++                  </a>
++                </DropdownMenuItem>
++              </DropdownMenuContent>
++            </DropdownMenu>
+ 
+           </div>
+ 
+@@ -105,7 +126,7 @@ export function HeroSection() {
+               asChild
+             >
+               <a
+-                href="mailto:a69448190@gmail.com.com"
++                href="mailto:ansh448555@gmail.com"
+                 aria-label="Email"
+               >
+                 <Mail className="h-5 w-5" />
+diff --git a/components/sections/projects-section.tsx b/components/sections/projects-section.tsx
+index 59e96d1..218ab84 100644
+--- a/components/sections/projects-section.tsx
++++ b/components/sections/projects-section.tsx
+@@ -5,8 +5,10 @@ import { Badge } from "@/components/ui/badge"
+ import { Button } from "@/components/ui/button"
+ import { ExternalLink, Github } from "lucide-react"
+ import Image from "next/image"
++import { FlagshipProjectCard } from "@/components/sections/flagship-project-card"
++import { EvalOpsDiagram, ICDDiagram } from "@/components/sections/architecture-diagrams"
+ 
+-const projects = [
++const secondaryProjects = [
+   {
+     title: "KrishiSaathi – AI-Powered Smart Farming Assistant",
+     description: "An AI-powered smart farming platform that delivers crop yield predictions, weather-based insights, and intelligent irrigation and fertilization recommendations with multilingual and voice support for Indian farmers.",
+@@ -14,7 +16,6 @@ const projects = [
+     tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Tailwind CSS", "AI/ML", "OpenWeather API", "Clerk Auth"],
+     github: "https://github.com/Anshu-AK-beep/KrishiSaathi",
+     live: "https://krishi-saathi-green.vercel.app/",
+-    featured: true
+   },
+   {
+     title: "ThinkMate — AI Socratic Mentor",
+@@ -23,7 +24,6 @@ const projects = [
+     tags: ["React", "TypeScript", "Node.js", "Express", "Groq AI", "Supabase", "AWS App Runner", "Tailwind CSS", "Vite"],
+     github: "https://github.com/Anshu-AK-beep/thinkmate",
+     live: "https://thinkmate-self.vercel.app",
+-    featured: true
+   },
+   {
+     title: "Agentic Trading System",
+@@ -32,16 +32,14 @@ const projects = [
+     tags: ["Python", "Multi-Agent Systems", "Streamlit", "Finance", "Algorithmic Trading"],
+     github: "https://github.com/Anshu-AK-beep/agentic-trading-system",
+     live: "https://agentic-trading-system-007.streamlit.app/",
+-    featured: true
+   },
+   {
+     title: "Disaster Relief Resource Allocation System",
+     description: "An AI-powered decision-support system for disaster response that prioritizes affected locations, optimizes delivery routes using graph algorithms, and intelligently allocates resources with automatic air-drop detection for unreachable areas.",
+     image: "/projects/disaster_relief_1.png",
+-    tags: ["Python", "Streamlit", "Graph Algorithms", "Dijkstra’s Algorithm", "AI Priority Scoring", "Data Visualization"],
++    tags: ["Python", "Streamlit", "Graph Algorithms", "Dijkstra's Algorithm", "AI Priority Scoring", "Data Visualization"],
+     github: "https://github.com/Anshu-AK-beep/disaster-relief-system",
+     live: "https://disaster-relief-system-007.streamlit.app/",
+-    featured: false
+   }
+ ]
+ 
+@@ -55,108 +53,119 @@ export function ProjectsSection() {
+             Featured Projects
+           </h2>
+           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+-            A selection of my recent work and personal projects
++            Systems I&apos;ve designed, built, and rigorously tested — not just shipped
+           </p>
+         </div>
+ 
+-        {/* Projects Grid */}
+-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+-          {projects.map((project, index) => (
+-            <Card 
+-              key={index} 
+-              className="flex flex-col hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+-            >
+-              <CardHeader className="p-0">
+-                {/* Project Image */}
+-                <div className="relative h-48 w-full bg-muted rounded-t-lg overflow-hidden">
+-                  {/* Placeholder - replace with actual images */}
+-                  <div className="relative h-48 w-full bg-muted rounded-t-lg overflow-hidden">
++        {/* Flagship Projects */}
++        <div className="space-y-8 mb-16">
++          <FlagshipProjectCard
++            eyebrow="Flagship Project"
++            title="EvalOps — LLM Evaluation Infrastructure"
++            pitch="An async pipeline that scores LLM outputs across five quality dimensions, catches production quality regressions with real statistics, and gates CI/CD deployments — because traditional monitoring catches server errors, not a chatbot that quietly got worse."
++            metrics={[
++              { value: "87.5%", label: "judge/human agreement on 40-example calibration set" },
++              { value: "100%", label: "agreement on unambiguous cases" },
++              { value: "5", label: "quality dimensions, scored independently" },
++              { value: "6", label: "containerized services, one-command self-host" },
++            ]}
++            diagram={<EvalOpsDiagram />}
++            tags={[
++              "FastAPI", "Celery", "Redis", "PostgreSQL", "pgvector", "pg_cron",
++              "BRIN Indexing", "Docker", "LLM-as-Judge", "GitHub Actions", "React"
++            ]}
++            github="https://github.com/Anshu-AK-beep/evalops"
++            readmeNote="No hosted live demo — the background workers that make EvalOps useful in production also make an always-on demo impractical for a portfolio project. The README walks through a one-command self-host with docker compose up."
++            engineeringNoteHeading="Found mid-build: the judge doesn't always return what you ask for"
++            engineeringNoteBody="Partway through the calibration run, the judge model started returning JSON strings where the schema expected numbers — strict validation broke on it. Fixed by widening the schema and coercing types on receipt, then re-ran calibration to confirm nothing else broke. Safety is modeled as a separate hard gate rather than an averaged score for the same reason: a 4.8/5 average can hide one violation that actually matters."
++          />
++
++          <FlagshipProjectCard
++            eyebrow="Flagship Project"
++            title="Intelligent Candidate Discovery"
++            pitch="A retrieval-augmented pipeline built for Redrob's AI Hackathon that ranks 100,000 candidate profiles against a job description in 28 seconds, on CPU — combining semantic and lexical search with an LLM re-ranking stage that explains its own reasoning."
++            metrics={[
++              { value: "28s", label: "to rank 100,000 profiles, CPU-only" },
++              { value: "0", label: "false positives on 26 adversarial profiles" },
++              { value: "5", label: "stage retrieval → fusion → scoring pipeline" },
++              { value: "40/35/25", label: "LLM / rule / semantic scoring blend" },
++            ]}
++            diagram={<ICDDiagram />}
++            tags={[
++              "FAISS", "BM25", "Reciprocal Rank Fusion", "TF-IDF/SVD",
++              "LLM Re-ranking", "Explainable Scoring", "Python"
++            ]}
++            github="https://github.com/Anshu-AK-beep/intelligent-candidate-discovery"
++            engineeringNoteHeading="Validated it against profiles designed to fool it"
++            engineeringNoteBody="Ranking well on real resumes doesn't prove the scorer isn't just pattern-matching keywords. So before trusting it, I planted 26 adversarial profiles — ones that mention the right keywords but fail on deal-breakers a keyword match wouldn't catch — and confirmed zero false positives before calling the pipeline done."
++          />
++        </div>
++
++        {/* Secondary Projects */}
++        <div className="mb-8">
++          <h3 className="text-xl font-semibold text-muted-foreground mb-6">More Projects</h3>
++          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
++            {secondaryProjects.map((project, index) => (
++              <Card
++                key={index}
++                className="flex flex-col hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
++              >
++                <CardHeader className="p-0">
++                  <div className="relative h-40 w-full bg-muted rounded-t-lg overflow-hidden">
+                     <Image
+-                    src={project.image}
+-                    alt={project.title}
+-                    fill
+-                    className="object-cover object-top"
+-                    sizes="(max-width: 768px) 100vw, 33vw"
++                      src={project.image}
++                      alt={project.title}
++                      fill
++                      className="object-cover object-top"
++                      sizes="(max-width: 768px) 100vw, 25vw"
+                     />
++                  </div>
++                </CardHeader>
+ 
+-                    {project.featured && (
+-                    <Badge className="absolute top-3 right-3">
+-                    Featured
+-                    </Badge>
+-                  )}
+-                </div>
+-              </div>
+-              </CardHeader>
++                <CardContent className="flex-1 pt-6">
++                  <CardTitle className="mb-2 text-base">{project.title}</CardTitle>
++                  <CardDescription className="text-sm leading-relaxed">
++                    {project.description}
++                  </CardDescription>
+ 
+-              <CardContent className="flex-1 pt-6">
+-                <CardTitle className="mb-2">{project.title}</CardTitle>
+-                <CardDescription className="text-sm leading-relaxed">
+-                  {project.description}
+-                </CardDescription>
+-                
+-                {/* Tags */}
+-                <div className="flex flex-wrap gap-2 mt-4">
+-                  {project.tags.map((tag, tagIndex) => (
+-                    <Badge 
+-                      key={tagIndex} 
+-                      variant="outline"
+-                      className="text-xs"
+-                    >
+-                      {tag}
+-                    </Badge>
+-                  ))}
+-                </div>
+-              </CardContent>
++                  <div className="flex flex-wrap gap-2 mt-4">
++                    {project.tags.slice(0, 4).map((tag, tagIndex) => (
++                      <Badge
++                        key={tagIndex}
++                        variant="outline"
++                        className="text-xs"
++                      >
++                        {tag}
++                      </Badge>
++                    ))}
++                  </div>
++                </CardContent>
+ 
+-              <CardFooter className="flex gap-2">
+-                <Button
+-                  variant="outline"
+-                  size="sm"
+-                  className="flex-1"
+-                  asChild
+-                >
+-                  <a
+-                    href={project.github}
+-                    target="_blank"
+-                    rel="noopener noreferrer"
+-                  >
+-                    <Github className="mr-2 h-4 w-4" />
+-                    Code
+-                  </a>
+-                </Button>
+-                {project.live && (
+-                  <Button
+-                    size="sm"
+-                    className="flex-1"
+-                    asChild
+-                  >
+-                    <a
+-                      href={project.live}
+-                      target="_blank"
+-                      rel="noopener noreferrer"
+-                    >
+-                      <ExternalLink className="mr-2 h-4 w-4" />
+-                      Live Demo
++                <CardFooter className="flex gap-2">
++                  <Button variant="outline" size="sm" className="flex-1" asChild>
++                    <a href={project.github} target="_blank" rel="noopener noreferrer">
++                      <Github className="mr-2 h-4 w-4" />
++                      Code
+                     </a>
+                   </Button>
+-                )}
+-              </CardFooter>
+-            </Card>
+-          ))}
++                  {project.live && (
++                    <Button size="sm" className="flex-1" asChild>
++                      <a href={project.live} target="_blank" rel="noopener noreferrer">
++                        <ExternalLink className="mr-2 h-4 w-4" />
++                        Live
++                      </a>
++                    </Button>
++                  )}
++                </CardFooter>
++              </Card>
++            ))}
++          </div>
+         </div>
+ 
+         {/* View More CTA */}
+         <div className="text-center mt-12">
+-          <Button
+-            variant="outline"
+-            size="lg"
+-            asChild
+-          >
+-            <a
+-              href="https://github.com/Anshu-AK-beep"
+-              target="_blank"
+-              rel="noopener noreferrer"
+-            >
++          <Button variant="outline" size="lg" asChild>
++            <a href="https://github.com/Anshu-AK-beep" target="_blank" rel="noopener noreferrer">
+               <Github className="mr-2 h-5 w-5" />
+               View More on GitHub
+             </a>
+@@ -165,4 +174,4 @@ export function ProjectsSection() {
+       </div>
+     </section>
+   )
+-}
+\ No newline at end of file
++}
+diff --git a/components/sections/skills-section.tsx b/components/sections/skills-section.tsx
+index 9fba93e..4cb254e 100644
+--- a/components/sections/skills-section.tsx
++++ b/components/sections/skills-section.tsx
+@@ -5,44 +5,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+ 
+ const skillCategories = [
+   {
+-    category: "Frontend Development",
++    category: "Backend & Infrastructure",
+     skills: [
+-      "React.js",
+-      "Next.js",
+-      "JavaScript",
+-      "Tailwind CSS",
+-      "HTML5",
+-      "CSS3"
++      "Python",
++      "FastAPI",
++      "Node.js",
++      "Celery",
++      "Redis",
++      "Docker",
++      "GitHub Actions (CI/CD)"
+     ]
+   },
+   {
+-    category: "Backend Development",
++    category: "Data & Retrieval",
+     skills: [
+-      "Node.js",
+-      "Python",
+-      "System Logic",
+-      "MySQL"
++      "PostgreSQL",
++      "pgvector",
++      "pg_cron & Partitioning",
++      "BRIN Indexing",
++      "FAISS",
++      "BM25",
++      "Reciprocal Rank Fusion"
+     ]
+   },
+   {
+-    category: "Tools & Technologies",
++    category: "AI / ML Engineering",
+     skills: [
+-      "Git",
+-      "GitHub",
+-      "Docker",
+-      "VS Code",
+-      "Vercel"
++      "LLM-as-Judge Evaluation",
++      "RAG",
++      "Prompt Engineering",
++      "Statistical Drift Detection",
++      "Multi-Agent Systems"
+     ]
+   },
+   {
+-    category: "Core Concepts",
++    category: "Frontend & Core",
+     skills: [
+-      "Data Structures",
+-      "Algorithms",
+-      "OOP",
+-      "System Design",
+-      "Database Design",
+-      "Problem Solving"
++      "React.js",
++      "Next.js",
++      "TypeScript",
++      "Tailwind CSS",
++      "Data Structures & Algorithms",
++      "System Design"
+     ]
+   }
+ ]
+@@ -91,7 +95,7 @@ export function SkillsSection() {
+         {/* Additional Info */}
+         <div className="mt-12 text-center">
+           <p className="text-muted-foreground">
+-            Always learning and exploring new technologies to stay current in the ever-evolving tech landscape
++            Picked up mostly by building things that needed to actually work in production, not just in a notebook
+           </p>
+         </div>
+       </div>
